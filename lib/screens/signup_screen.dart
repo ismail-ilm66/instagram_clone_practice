@@ -1,5 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:instagram_clone_practice/firebase/authentication.dart';
+import 'package:instagram_clone_practice/utilities/utils.dart';
 import 'package:instagram_clone_practice/widgets/text_field.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -12,9 +16,12 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController bioController = TextEditingController();
-
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  double? height;
+  //final AuthorizationMethods authorizationMethods = AuthorizationMethods();
+  Uint8List? image;
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -25,9 +32,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
     bioController.dispose();
   }
 
+  void getheight() {
+    height = getheightofDevice(context);
+  }
+
+  void pickImage() async {
+    var i = await chooseImage();
+    if (i == null && image == null) {
+      displaySnackBar(context, 'No Image Is Selected!');
+    } else {
+      setState(() {
+        image = i;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -42,6 +65,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 'assets\/ic_instagram.svg',
                 // ignore: deprecated_member_use
                 color: Colors.white,
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              Stack(
+                children: [
+                  image != null
+                      ? CircleAvatar(
+                          radius: 64, backgroundImage: MemoryImage(image!))
+                      : const CircleAvatar(
+                          radius: 64,
+                          backgroundImage: NetworkImage(
+                              'https://st3.depositphotos.com/4111759/13425/v/1600/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg'),
+                        ),
+                  Positioned(
+                    left: 80,
+                    bottom: -10,
+                    child: IconButton(
+                      onPressed: () {
+                        pickImage();
+                      },
+                      icon: Icon(Icons.add_a_photo),
+                    ),
+                  )
+                ],
               ),
               const SizedBox(
                 height: 24,
@@ -85,7 +133,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    String x = await AuthorizationMethods().signUp(
+                      username: usernameController.text,
+                      email: emailController.text,
+                      password: passwordController.text,
+                      bio: bioController.text,
+                      image: image!,
+                    );
+                    displaySnackBar(context, x);
+                  },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     //  alignment: Alignment.center,
