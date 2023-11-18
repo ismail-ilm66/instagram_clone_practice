@@ -13,9 +13,10 @@ class StorageMethods {
         .child(name)
         .child(_firebaseAuth.currentUser!.uid);
     UploadTask uploadTask = reference.putData(image);
-    TaskSnapshot snapshot = await uploadTask.snapshot;
+    TaskSnapshot snapshot = await uploadTask.whenComplete(() => null);
+
     String downloadUrl = await snapshot.ref.getDownloadURL();
-    print(downloadUrl);
+
     return downloadUrl;
   }
 }

@@ -3,6 +3,9 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:instagram_clone_practice/firebase/authentication.dart';
+import 'package:instagram_clone_practice/responsive/mobile_screen.dart';
+import 'package:instagram_clone_practice/responsive/responsive_layout.dart';
+import 'package:instagram_clone_practice/responsive/web_screen.dart';
 import 'package:instagram_clone_practice/utilities/utils.dart';
 import 'package:instagram_clone_practice/widgets/text_field.dart';
 
@@ -21,6 +24,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   double? height;
   //final AuthorizationMethods authorizationMethods = AuthorizationMethods();
   Uint8List? image;
+  bool isLoading = false;
 
   @override
   void dispose() {
@@ -45,6 +49,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
         image = i;
       });
     }
+  }
+
+  void signUpUser() async {
+    setState(() {
+      isLoading = true;
+    });
+    String x = await AuthorizationMethods().signUp(
+      username: usernameController.text,
+      email: emailController.text,
+      password: passwordController.text,
+      bio: bioController.text,
+      image: image!,
+    );
+    displaySnackBar(context, x);
+    // ignore: use_build_context_synchronously
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
+      return const ResponsiveLayout(
+        MobileScreen: MobileScreen(),
+        WebScreen: WebScreen(),
+      );
+    }));
   }
 
   @override
@@ -86,7 +111,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       onPressed: () {
                         pickImage();
                       },
-                      icon: Icon(Icons.add_a_photo),
+                      icon: const Icon(Icons.add_a_photo),
                     ),
                   )
                 ],
@@ -132,22 +157,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               SizedBox(
                 width: double.infinity,
+                height: 45,
                 child: ElevatedButton(
-                  onPressed: () async {
-                    String x = await AuthorizationMethods().signUp(
-                      username: usernameController.text,
-                      email: emailController.text,
-                      password: passwordController.text,
-                      bio: bioController.text,
-                      image: image!,
-                    );
-                    displaySnackBar(context, x);
-                  },
+                  onPressed: signUpUser,
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     //  alignment: Alignment.center,
                   ),
-                  child: const Text('SignUp'),
+                  child: isLoading == true
+                      ? const CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 4.0,
+                        )
+                      : const Text('SignUp'),
                 ),
               ),
               Flexible(

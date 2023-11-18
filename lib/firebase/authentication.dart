@@ -1,9 +1,10 @@
 import 'dart:typed_data';
-
+import 'package:instagram_clone_practice/models/user.dart' as model;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone_practice/firebase/storage_functionalities.dart';
+import 'package:instagram_clone_practice/models/user.dart';
 
 class AuthorizationMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -29,23 +30,44 @@ class AuthorizationMethods {
         String dpUrl = await StorageMethods()
             .uploadImageToStorage(image, 'profilePics', false);
 
-        await _firestore.collection('users').doc(credentials.user!.uid).set(
-          {
-            'username': username,
-            "bio": bio,
-            "uid": credentials.user!.uid,
-            'email': email,
-            'followers': [],
-            'following': [],
-            'profilePhoto': dpUrl,
-          },
+        model.User user = model.User(
+          email: email,
+          uid: credentials.user!.uid,
+          profilePhoto: dpUrl,
+          username: username,
+          bio: bio,
+          followers: [],
+          following: [],
         );
+
+        await _firestore.collection('users').doc(credentials.user!.uid).set(
+              user.toJson(),
+            );
         res = "Account Created";
         return res;
       }
     } catch (e) {
+      print("Error: $e");
       res = e.toString();
     }
     return res;
+  }
+
+  Future<String> signIn(
+      {required String email, required String password}) async {
+    String result = 'Some Error has occured';
+    try {
+      if (email.isNotEmpty && password.isNotEmpty) {
+        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+            email: email, password: password);
+        result = userCredential.user!.uid;
+        result = "Successfully Logged In";
+      } else {
+        result = "Please Fill all the fields";
+      }
+    } catch (e) {
+      result = e.toString();
+    }
+    return result;
   }
 }

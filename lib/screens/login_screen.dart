@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:instagram_clone_practice/firebase/authentication.dart';
 import 'package:instagram_clone_practice/screens/signup_screen.dart';
 import 'package:instagram_clone_practice/widgets/text_field.dart';
 
@@ -13,6 +14,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  bool isLoading = false;
   @override
   void dispose() {
     // TODO: implement dispose
@@ -21,18 +23,41 @@ class _LoginScreenState extends State<LoginScreen> {
     passwordController.dispose();
   }
 
+  void signInUser() async {
+    setState(() {
+      isLoading = true;
+    });
+    String x = await AuthorizationMethods()
+        .signIn(email: emailController.text, password: passwordController.text);
+    print(x);
+    // if (x == "Successfully Logged In") {
+    //   // ignore: use_build_context_synchronously
+    //   Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (_) {
+    //         return const MainScreen();
+    //       },
+    //     ),
+    //   );
+    // }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 32),
+          padding: const EdgeInsets.symmetric(horizontal: 32),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Flexible(
-                child: Container(),
                 flex: 2,
+                child: Container(),
               ),
               SvgPicture.asset(
                 'assets\/ic_instagram.svg',
@@ -61,25 +86,30 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(
                 width: double.infinity,
+                height: 45,
                 child: ElevatedButton(
-                  onPressed: () {},
-                  child: Text('Login'),
+                  onPressed: signInUser,
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     //  alignment: Alignment.center,
                   ),
+                  child: isLoading
+                      ? const CircularProgressIndicator(
+                          color: Colors.white,
+                        )
+                      : const Text('Login'),
                 ),
               ),
               Flexible(
-                child: Container(),
                 flex: 2,
+                child: Container(),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                      padding: EdgeInsets.symmetric(vertical: 8),
-                      child: Text('Don\'t Have an Account? ')),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: const Text('Don\'t Have an Account? ')),
                   InkWell(
                     onTap: () {
                       Navigator.push(
@@ -92,8 +122,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       );
                     },
                     child: Container(
-                        padding: EdgeInsets.symmetric(vertical: 8),
-                        child: Text(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: const Text(
                           'Sign Up',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, color: Colors.blue),
