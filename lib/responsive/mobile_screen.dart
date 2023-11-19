@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone_practice/models/user.dart' as model;
 import 'package:instagram_clone_practice/providers/user_provider.dart';
+import 'package:instagram_clone_practice/screens/add_post_screen.dart';
 import 'package:instagram_clone_practice/utilities/colors.dart';
 import 'package:provider/provider.dart';
 
@@ -83,17 +84,17 @@ class _MobileScreenState extends State<MobileScreen> {
         onTap: jumpToOther_page,
       ),
       body: PageView(
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         controller: _pageController,
         onPageChanged: (value) {
           setState(() {
             _page = value;
           });
         },
-        children: [
+        children: const [
           Center(child: const Text('Home')),
           Center(child: const Text('Search')),
-          Center(child: const Text('Add')),
+          AddPost(),
           Center(child: const Text('Favorite')),
           Center(child: const Text('Profile')),
         ],
