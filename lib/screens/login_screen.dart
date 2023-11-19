@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:instagram_clone_practice/firebase/authentication.dart';
+import 'package:instagram_clone_practice/responsive/mobile_screen.dart';
+import 'package:instagram_clone_practice/responsive/responsive_layout.dart';
+import 'package:instagram_clone_practice/responsive/web_screen.dart';
 import 'package:instagram_clone_practice/screens/signup_screen.dart';
 import 'package:instagram_clone_practice/widgets/text_field.dart';
 
@@ -41,9 +44,12 @@ class _LoginScreenState extends State<LoginScreen> {
     //     ),
     //   );
     // }
-    setState(() {
-      isLoading = false;
-    });
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
+      return const ResponsiveLayout(
+        MobileScreen: MobileScreen(),
+        WebScreen: WebScreen(),
+      );
+    }));
   }
 
   @override

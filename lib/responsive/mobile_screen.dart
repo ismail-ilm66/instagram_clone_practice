@@ -1,6 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram_clone_practice/models/user.dart' as model;
+import 'package:instagram_clone_practice/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 
 class MobileScreen extends StatefulWidget {
   const MobileScreen({super.key});
@@ -10,28 +11,25 @@ class MobileScreen extends StatefulWidget {
 }
 
 class _MobileScreenState extends State<MobileScreen> {
-  String? username;
+  model.User? user;
+
+  void getUserData() {
+    UserProvider userProvider = Provider.of(context, listen: false);
+    userProvider.refreshUser();
+    user = userProvider.getUser;
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getUserName();
-  }
-
-  void getUserName() async {
-    DocumentSnapshot snapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get();
-    setState(() {
-      username = (snapshot.data() as Map<String, dynamic>)['username'];
-    });
+    getUserData();
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text('${username}'),
+        child: Text(user == null ? 'Mobile Screen' : user!.username),
       ),
     );
   }
