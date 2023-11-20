@@ -6,9 +6,9 @@ double getheightofDevice(context) {
   return h;
 }
 
-chooseImage() async {
+chooseImage(ImageSource imageSource) async {
   final ImagePicker _imagePicker = ImagePicker();
-  XFile? image = await _imagePicker.pickImage(source: ImageSource.gallery);
+  XFile? image = await _imagePicker.pickImage(source: imageSource);
   print(image);
   if (image != null) {
     return image.readAsBytes();

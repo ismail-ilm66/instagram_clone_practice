@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:instagram_clone_practice/models/user.dart' as model;
 import 'package:instagram_clone_practice/providers/user_provider.dart';
 import 'package:instagram_clone_practice/screens/add_post_screen.dart';
+import 'package:instagram_clone_practice/screens/login_screen.dart';
 import 'package:instagram_clone_practice/utilities/colors.dart';
 import 'package:provider/provider.dart';
 
