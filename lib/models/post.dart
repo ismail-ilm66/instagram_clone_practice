@@ -7,8 +7,8 @@ class Post {
   final String username;
   final String postId;
   final String postUrl;
-  final List datePublished;
-  final int likes;
+  final datePublished;
+  final List likes;
 
   Post({
     required this.description,
