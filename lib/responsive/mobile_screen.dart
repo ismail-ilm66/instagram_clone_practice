@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone_practice/models/user.dart' as model;
 import 'package:instagram_clone_practice/providers/user_provider.dart';
+import 'package:instagram_clone_practice/responsive/feed_screen.dart';
 import 'package:instagram_clone_practice/screens/add_post_screen.dart';
 
 import 'package:instagram_clone_practice/utilities/colors.dart';
@@ -93,7 +94,7 @@ class _MobileScreenState extends State<MobileScreen> {
           });
         },
         children: const [
-          Center(child: const Text('Home')),
+          Feeds(),
           Center(child: const Text('Search')),
           AddPost(),
           Center(child: const Text('Favorite')),
