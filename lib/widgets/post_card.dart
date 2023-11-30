@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:instagram_clone_practice/firebase/firestore_methods.dart';
+import 'package:instagram_clone_practice/providers/user_provider.dart';
 import 'package:instagram_clone_practice/utilities/colors.dart';
+import 'package:instagram_clone_practice/widgets/like_animation.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class PostCard extends StatefulWidget {
-  const PostCard({super.key});
+  final snap;
+  const PostCard({super.key, required this.snap});
 
   @override
   State<PostCard> createState() => _PostCardState();
 }
 
 class _PostCardState extends State<PostCard> {
+  bool isLikeAnimating = false;
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserProvider>(context, listen: false).getUser;
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10),
       color: mobileBackgroundColor,
@@ -24,15 +33,15 @@ class _PostCardState extends State<PostCard> {
                 CircleAvatar(
                   radius: 16,
                   backgroundImage: NetworkImage(
-                    'https://plus.unsplash.com/premium_photo-1682724602143-a77d75d273b1?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    widget.snap['profilePhoto'],
                   ),
                 ),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(left: 10.0),
                     child: Text(
-                      'username',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      widget.snap['username'],
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
@@ -58,30 +67,79 @@ class _PostCardState extends State<PostCard> {
                       },
                     );
                   },
-                  icon: Icon(Icons.more_vert),
+                  icon: const Icon(Icons.more_vert),
                 ),
               ],
             ),
           ),
-          SizedBox(
-            height: MediaQuery.sizeOf(context).height * 0.35,
-            width: double.infinity,
-            child: Image.network(
-                fit: BoxFit.cover,
-                'https://plus.unsplash.com/premium_photo-1682724602143-a77d75d273b1?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
+          GestureDetector(
+            onDoubleTap: () {
+              FirestoreMethods().likePost(
+                uid: user.uid,
+                postId: widget.snap['postId'],
+                likes: widget.snap['likes'],
+              );
+              setState(() {
+                isLikeAnimating = true;
+              });
+            },
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                SizedBox(
+                  height: MediaQuery.sizeOf(context).height * 0.35,
+                  width: double.infinity,
+                  child: Image.network(
+                    widget.snap['postUrl'],
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                AnimatedOpacity(
+                  duration: const Duration(milliseconds: 200),
+                  opacity: isLikeAnimating ? 1 : 0,
+                  child: LikeAnimation(
+                    isAnimating: isLikeAnimating,
+                    duration: const Duration(milliseconds: 400),
+                    onEnd: () {
+                      Future.delayed(Duration.zero, () {
+                        setState(() {
+                          isLikeAnimating = false;
+                        });
+                      });
+                    },
+                    child: const Icon(
+                      Icons.favorite,
+                      size: 130,
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
           Row(
             children: [
-              IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  Icons.favorite,
-                  color: Colors.red,
+              LikeAnimation(
+                isAnimating: widget.snap['likes'].contains(user.uid),
+                smallLike: true,
+                child: IconButton(
+                  onPressed: () async {
+                    await FirestoreMethods().likePost(
+                      uid: user.uid,
+                      postId: widget.snap['postId'],
+                      likes: widget.snap['likes'],
+                    );
+                  },
+                  icon: widget.snap['likes'].contains(user.uid)
+                      ? Icon(
+                          Icons.favorite,
+                          color: Colors.red,
+                        )
+                      : Icon(Icons.favorite_border),
                 ),
               ),
               IconButton(
                 onPressed: () {},
-                icon: Icon(
+                icon: const Icon(
                   Icons.comment,
                 ),
               ),
@@ -108,23 +166,21 @@ class _PostCardState extends State<PostCard> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              //   mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text('1,234 Likes'),
+                Text('${widget.snap['likes'].length} likes'),
                 Container(
-                  padding: EdgeInsets.only(top: 8),
+                  padding: const EdgeInsets.only(top: 8),
                   child: RichText(
                     text: TextSpan(
                       style: const TextStyle(color: primaryColor),
                       children: [
                         TextSpan(
-                          text: 'username',
-                          style: TextStyle(fontWeight: FontWeight.w800),
+                          text: widget.snap['username'],
+                          style: const TextStyle(fontWeight: FontWeight.w800),
                         ),
-                        TextSpan(
-                            text:
-                                '  Hello There!! Verily Allah is the Greatest And The Most Merciful!!s'),
+                        TextSpan(text: '  ${widget.snap['description']}'),
                       ],
                     ),
                   ),
@@ -132,16 +188,17 @@ class _PostCardState extends State<PostCard> {
                 InkWell(
                   onTap: () {},
                   child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 4),
-                    child: Text(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: const Text(
                       'View All 1449 Comments',
                       style: TextStyle(fontSize: 16, color: secondaryColor),
                     ),
                   ),
                 ),
                 Text(
-                  '21/07/2023',
-                  style: TextStyle(fontSize: 16, color: secondaryColor),
+                  DateFormat.yMMMd()
+                      .format(widget.snap['datePublished'].toDate()),
+                  style: const TextStyle(fontSize: 16, color: secondaryColor),
                 ),
               ],
             ),

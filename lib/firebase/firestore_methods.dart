@@ -7,6 +7,7 @@ import 'package:instagram_clone_practice/models/post.dart';
 import 'package:uuid/uuid.dart';
 
 class FirestoreMethods {
+  FirebaseFirestore _firestore = FirebaseFirestore.instance;
   //final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   Future<String> uploadPost(
     Uint8List image,
@@ -31,12 +32,34 @@ class FirestoreMethods {
         datePublished: DateTime.now(),
         likes: [],
       );
-      FirebaseFirestore _firestore = FirebaseFirestore.instance;
       await _firestore.collection('posts').doc(postId).set(post.toJson());
       res = "Success";
     } catch (e) {
       res = e.toString();
     }
     return res;
+  }
+
+  Future<void> likePost(
+      {required String uid,
+      required String postId,
+      required List likes}) async {
+    try {
+      if (likes.contains(uid)) {
+        await _firestore.collection('posts').doc(postId).update(
+          {
+            'likes': FieldValue.arrayRemove([uid]),
+          },
+        );
+      } else {
+        await _firestore.collection('posts').doc(postId).update(
+          {
+            'likes': FieldValue.arrayUnion([uid]),
+          },
+        );
+      }
+    } catch (e) {
+      print(e.toString());
+    }
   }
 }
