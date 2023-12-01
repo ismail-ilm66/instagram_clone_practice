@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class CommentsCard extends StatelessWidget {
-  const CommentsCard({super.key});
+  const CommentsCard({super.key, required this.snapshot});
+  final snapshot;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
             backgroundImage: NetworkImage(
-              'https://images.unsplash.com/photo-1659651110991-29957566a52e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8a2VhbnV8ZW58MHx8MHx8fDA%3D',
+              snapshot['profilePhoto'],
             ),
             radius: 18,
           ),
@@ -23,23 +26,28 @@ class CommentsCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 RichText(
-                  text: const TextSpan(
+                  text: TextSpan(
                     children: [
                       TextSpan(
-                        text: 'username',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        text: '${snapshot['name']}',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      TextSpan(text: '  The Comment is shown here!'),
+                      TextSpan(
+                        text: '  ${snapshot['comment']}',
+                      ),
                     ],
                   ),
                 ),
                 const SizedBox(
                   height: 5,
                 ),
-                Text('12/21/2023')
+                Text(
+                  DateFormat.yMMMEd().format(snapshot['date'].toDate()),
+                )
               ],
             ),
           ),
+          Expanded(child: Container()),
           IconButton(
               onPressed: () {},
               icon: Icon(

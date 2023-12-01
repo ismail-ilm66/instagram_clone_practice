@@ -62,4 +62,28 @@ class FirestoreMethods {
       print(e.toString());
     }
   }
+
+  Future<void> postComments(String comment, String uid, String profilePhoto,
+      String postId, String name) async {
+    try {
+      String commentId = Uuid().v1();
+      await _firestore
+          .collection('posts')
+          .doc(postId)
+          .collection('comments')
+          .doc(commentId)
+          .set(
+        {
+          'commentId': commentId,
+          'comment': comment,
+          'uid': uid,
+          'profilePhoto': profilePhoto,
+          'name': name,
+          'date': DateTime.now(),
+        },
+      );
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 }

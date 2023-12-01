@@ -1,15 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram_clone_practice/firebase/firestore_methods.dart';
 import 'package:instagram_clone_practice/providers/user_provider.dart';
 import 'package:instagram_clone_practice/utilities/colors.dart';
+import 'package:instagram_clone_practice/utilities/utils.dart';
 import 'package:instagram_clone_practice/widgets/comment_card.dart';
 import 'package:provider/provider.dart';
 
 class CommentsScreen extends StatelessWidget {
-  CommentsScreen({super.key});
+  CommentsScreen({super.key, required this.snapshot});
   final TextEditingController controller = TextEditingController();
+  final snapshot;
 
   @override
   Widget build(BuildContext context) {
+    print(snapshot);
     final user = Provider.of<UserProvider>(context).getUser;
     return Scaffold(
       appBar: AppBar(
@@ -44,7 +49,20 @@ class CommentsScreen extends StatelessWidget {
                 ),
               ),
               TextButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    if (controller.text.isNotEmpty) {
+                      await FirestoreMethods().postComments(
+                        controller.text,
+                        snapshot['uid'],
+                        snapshot['profilePhoto'],
+                        snapshot['postId'],
+                        snapshot['username'],
+                      );
+                      controller.clear();
+                    } else {
+                      displaySnackBar(context, 'Please Enter the comment');
+                    }
+                  },
                   child: Text(
                     'Post',
                     style: TextStyle(color: Colors.blue),
@@ -53,7 +71,27 @@ class CommentsScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: CommentsCard(),
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection('posts')
+            .doc(snapshot['postId'])
+            .collection('comments')
+            .orderBy('date')
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return ListView.builder(
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (context, index) {
+              return CommentsCard(snapshot: snapshot.data!.docs[index].data());
+            },
+          );
+        },
+      ),
     );
   }
 }
