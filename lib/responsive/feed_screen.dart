@@ -31,7 +31,10 @@ class _FeedsState extends State<Feeds> {
         ],
       ),
       body: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection('posts').snapshots(),
+          stream: FirebaseFirestore.instance
+              .collection('posts')
+              .orderBy('datePublished', descending: true)
+              .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(

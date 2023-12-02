@@ -14,8 +14,8 @@ class CommentsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(snapshot);
     final user = Provider.of<UserProvider>(context).getUser;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: mobileBackgroundColor,
@@ -53,10 +53,10 @@ class CommentsScreen extends StatelessWidget {
                     if (controller.text.isNotEmpty) {
                       await FirestoreMethods().postComments(
                         controller.text,
-                        snapshot['uid'],
-                        snapshot['profilePhoto'],
+                        user.uid,
+                        user.profilePhoto,
                         snapshot['postId'],
-                        snapshot['username'],
+                        user.username,
                       );
                       controller.clear();
                     } else {

@@ -76,7 +76,13 @@ class _PostCardState extends State<PostCard> {
                             shrinkWrap: true,
                             children: ['Delete Post']
                                 .map((e) => InkWell(
-                                      onTap: () {},
+                                      onTap: () async {
+                                        Navigator.pop(context);
+                                        await FirestoreMethods()
+                                            .deletePost(widget.snap['postId']);
+
+                                        setState(() {});
+                                      },
                                       child: Container(
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 10, vertical: 16),
@@ -151,11 +157,11 @@ class _PostCardState extends State<PostCard> {
                     );
                   },
                   icon: widget.snap['likes'].contains(user.uid)
-                      ? Icon(
+                      ? const Icon(
                           Icons.favorite,
                           color: Colors.red,
                         )
-                      : Icon(Icons.favorite_border),
+                      : const Icon(Icons.favorite_border),
                 ),
               ),
               IconButton(
