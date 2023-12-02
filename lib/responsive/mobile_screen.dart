@@ -5,6 +5,7 @@ import 'package:instagram_clone_practice/providers/user_provider.dart';
 import 'package:instagram_clone_practice/responsive/feed_screen.dart';
 import 'package:instagram_clone_practice/screens/add_post_screen.dart';
 import 'package:instagram_clone_practice/screens/login_screen.dart';
+import 'package:instagram_clone_practice/screens/profile_screen.dart';
 import 'package:instagram_clone_practice/screens/search_screen.dart';
 
 import 'package:instagram_clone_practice/utilities/colors.dart';
@@ -101,7 +102,7 @@ class _MobileScreenState extends State<MobileScreen> {
           AddPost(),
           //  Center(child: const Text('Favorite')),
           LoginScreen(),
-          Center(child: const Text('Profile')),
+          ProfileScreen(),
         ],
       ),
     );
