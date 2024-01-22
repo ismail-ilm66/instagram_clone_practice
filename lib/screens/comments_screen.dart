@@ -83,6 +83,10 @@ class CommentsScreen extends StatelessWidget {
             return const Center(
               child: CircularProgressIndicator(),
             );
+          } else if (snapshot.data!.docs.length == 0) {
+            return const Center(
+              child: Text('No Comments'),
+            );
           }
           return ListView.builder(
             itemCount: snapshot.data!.docs.length,

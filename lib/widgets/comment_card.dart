@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:instagram_clone_practice/firebase/firestore_methods.dart';
 import 'package:instagram_clone_practice/providers/user_provider.dart';
+import 'package:instagram_clone_practice/widgets/like_animation.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -12,7 +13,7 @@ class CommentsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context, listen: false).getUser;
-    print(snapshot);
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
       child: Row(
@@ -57,20 +58,24 @@ class CommentsCard extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              IconButton(
-                onPressed: () async {
-                  await FirestoreMethods().likeComment(
-                      uid: user.uid,
-                      postId: postId,
-                      commentId: snapshot['commentId'],
-                      likes: snapshot['likes']);
-                }, // },
-                icon: snapshot['likes'].contains(user.uid)
-                    ? Icon(
-                        Icons.favorite_rounded,
-                        color: Colors.red,
-                      )
-                    : const Icon(Icons.favorite_border),
+              LikeAnimation(
+                isAnimating: snapshot['likes'].contains(user.uid),
+                smallLike: true,
+                child: IconButton(
+                  onPressed: () async {
+                    await FirestoreMethods().likeComment(
+                        uid: user.uid,
+                        postId: postId,
+                        commentId: snapshot['commentId'],
+                        likes: snapshot['likes']);
+                  }, // },
+                  icon: snapshot['likes'].contains(user.uid)
+                      ? Icon(
+                          Icons.favorite_rounded,
+                          color: Colors.red,
+                        )
+                      : const Icon(Icons.favorite_border),
+                ),
               ),
               Text(snapshot['likes'].length.toString())
             ],

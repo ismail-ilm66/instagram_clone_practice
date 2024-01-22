@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:instagram_clone_practice/utilities/colors.dart';
+import 'package:instagram_clone_practice/widgets/follow_button.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -22,23 +23,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             Row(
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   backgroundImage: NetworkImage(
                     'https://images.unsplash.com/photo-1568667256549-094345857637?q=80&w=2030&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
                   ),
                   radius: 40,
                 ),
                 Expanded(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  child: Column(
                     children: [
-                      getColumn('Posts', 20),
-                      getColumn('Followers', 200),
-                      getColumn('Following', 100),
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          getColumn('Posts', 20),
+                          getColumn('Followers', 200),
+                          getColumn('Following', 100),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          FollowButton(
+                            function: () {},
+                            backgroundColor: mobileBackgroundColor,
+                            borderColor: Colors.grey,
+                            text: "Edit Profile",
+                            textColor: primaryColor,
+                          ),
+                        ],
+                      ),
                     ],
                   ),
-                )
+                ),
               ],
             )
           ],
