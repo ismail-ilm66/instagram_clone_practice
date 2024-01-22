@@ -15,7 +15,7 @@ class CommentsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).getUser;
-
+    final String postId = snapshot['postId'];
     return Scaffold(
       appBar: AppBar(
         backgroundColor: mobileBackgroundColor,
@@ -63,7 +63,7 @@ class CommentsScreen extends StatelessWidget {
                       displaySnackBar(context, 'Please Enter the comment');
                     }
                   },
-                  child: Text(
+                  child: const Text(
                     'Post',
                     style: TextStyle(color: Colors.blue),
                   ))
@@ -80,14 +80,18 @@ class CommentsScreen extends StatelessWidget {
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
           return ListView.builder(
             itemCount: snapshot.data!.docs.length,
             itemBuilder: (context, index) {
-              return CommentsCard(snapshot: snapshot.data!.docs[index].data());
+              print(snapshot.data!.docs[index].data());
+              return CommentsCard(
+                snapshot: snapshot.data!.docs[index].data(),
+                postId: postId,
+              );
             },
           );
         },
