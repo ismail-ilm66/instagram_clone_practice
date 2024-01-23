@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:instagram_clone_practice/models/user.dart' as model;
 import 'package:instagram_clone_practice/providers/user_provider.dart';
 import 'package:instagram_clone_practice/responsive/feed_screen.dart';
@@ -49,6 +50,29 @@ class _MobileScreenState extends State<MobileScreen> {
   }
 
   Widget build(BuildContext context) {
+    if (user == null) {
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: mobileBackgroundColor,
+          title: SvgPicture.asset(
+            'assets\/ic_instagram.svg',
+            color: primaryColor,
+            height: 32,
+          ),
+          actions: [
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.chat_rounded),
+            )
+          ],
+        ),
+        body: const Center(
+          child: CircularProgressIndicator(
+            color: blueColor,
+          ),
+        ),
+      );
+    }
     return Scaffold(
       bottomNavigationBar: CupertinoTabBar(
         backgroundColor: mobileBackgroundColor,
@@ -96,13 +120,13 @@ class _MobileScreenState extends State<MobileScreen> {
             _page = value;
           });
         },
-        children: const [
-          Feeds(),
-          SearchScreen(),
-          AddPost(),
-          //  Center(child: const Text('Favorite')),
-          LoginScreen(),
-          ProfileScreen(),
+        children: [
+          const Feeds(),
+          const SearchScreen(),
+          const AddPost(),
+          const Center(child: Text('Favorite')),
+          // const LoginScreen(),
+          ProfileScreen(uid: user!.uid),
         ],
       ),
     );

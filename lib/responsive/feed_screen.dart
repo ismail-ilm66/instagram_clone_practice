@@ -38,7 +38,9 @@ class _FeedsState extends State<Feeds> {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(
+                  color: blueColor,
+                ),
               );
             }
             return ListView.builder(

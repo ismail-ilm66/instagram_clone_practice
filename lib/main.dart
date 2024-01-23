@@ -60,9 +60,12 @@ class MyApp extends StatelessWidget {
                 }
               }
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
+                return const Center(
+                    child: CircularProgressIndicator(
+                  color: blueColor,
+                ));
               }
-              return LoginScreen();
+              return const LoginScreen();
             }),
       ),
     );

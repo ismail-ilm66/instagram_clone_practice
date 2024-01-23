@@ -81,7 +81,9 @@ class CommentsScreen extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                color: blueColor,
+              ),
             );
           } else if (snapshot.data!.docs.length == 0) {
             return const Center(
