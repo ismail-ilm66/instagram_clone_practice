@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram_clone_practice/firebase/firestore_methods.dart';
 import 'package:instagram_clone_practice/utilities/colors.dart';
 import 'package:instagram_clone_practice/utilities/utils.dart';
 import 'package:instagram_clone_practice/widgets/follow_button.dart';
-import 'package:instagram_clone_practice/widgets/post_card.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String uid;
@@ -17,6 +17,8 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   Map<String, dynamic> profileData = {};
   bool gettingData = true;
+  int following = 0;
+  int followers = 0;
   int totalPosts = 0;
   bool isfollowing = false;
   @override
@@ -41,6 +43,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       totalPosts = x.docs.length;
       isfollowing = profileData['followers']
           .contains(FirebaseAuth.instance.currentUser!.uid);
+
+      followers = profileData['followers'].length;
+      following = profileData['following'].length;
 
       setState(() {
         gettingData = false;
@@ -85,10 +90,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               getColumn('Posts', totalPosts),
-                              getColumn(
-                                  'Followers', profileData['followers'].length),
-                              getColumn(
-                                  'Following', profileData['following'].length),
+                              getColumn('Followers', followers),
+                              getColumn('Following', following),
                             ],
                           ),
                           Row(
@@ -105,13 +108,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     )
                                   : isfollowing
                                       ? FollowButton(
-                                          function: () {},
+                                          function: () async {
+                                            await FirestoreMethods().followUser(
+                                                uid: FirebaseAuth
+                                                    .instance.currentUser!.uid,
+                                                followUserId: widget.uid);
+                                            setState(() {
+                                              isfollowing = false;
+                                              followers--;
+                                            });
+                                          },
                                           backgroundColor: Colors.white,
                                           borderColor: Colors.grey,
                                           text: 'Unfollow',
                                           textColor: Colors.black)
                                       : FollowButton(
-                                          function: () {},
+                                          function: () async {
+                                            await FirestoreMethods().followUser(
+                                                uid: FirebaseAuth
+                                                    .instance.currentUser!.uid,
+                                                followUserId: widget.uid);
+                                            setState(() {
+                                              isfollowing = true;
+                                              followers++;
+                                            });
+                                          },
                                           backgroundColor: blueColor,
                                           borderColor: Colors.blue,
                                           text: 'Follow',
