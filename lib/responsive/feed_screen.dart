@@ -15,15 +15,11 @@ class Feeds extends StatefulWidget {
 
 class _FeedsState extends State<Feeds> {
   var width = 0.0;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    width = MediaQuery.of(context).size.width;
-  }
 
   @override
   Widget build(BuildContext context) {
+    width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: width >= webSize
           ? null

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:instagram_clone_practice/firebase/firestore_methods.dart';
 import 'package:instagram_clone_practice/providers/user_provider.dart';
 import 'package:instagram_clone_practice/screens/comments_screen.dart';
+import 'package:instagram_clone_practice/screens/profile_screen.dart';
 import 'package:instagram_clone_practice/utilities/colors.dart';
 import 'package:instagram_clone_practice/widgets/like_animation.dart';
 import 'package:intl/intl.dart';
@@ -37,6 +38,12 @@ class _PostCardState extends State<PostCard> {
     setState(() {});
   }
 
+  void gotoProfile() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return ProfileScreen(uid: widget.snap['uid']);
+    }));
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context, listen: false).getUser;
@@ -51,18 +58,24 @@ class _PostCardState extends State<PostCard> {
                 .copyWith(),
             child: Row(
               children: [
-                CircleAvatar(
-                  radius: 16,
-                  backgroundImage: NetworkImage(
-                    widget.snap['profilePhoto'],
+                InkWell(
+                  onTap: gotoProfile,
+                  child: CircleAvatar(
+                    radius: 16,
+                    backgroundImage: NetworkImage(
+                      widget.snap['profilePhoto'],
+                    ),
                   ),
                 ),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(left: 10.0),
-                    child: Text(
-                      widget.snap['username'],
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    child: InkWell(
+                      onTap: gotoProfile,
+                      child: Text(
+                        widget.snap['username'],
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ),
                 ),
