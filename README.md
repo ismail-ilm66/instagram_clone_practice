@@ -1,6 +1,7 @@
 # Flutter Instagram Clone
 
 A responsive Instagram clone built with Flutter, featuring email and password authentication, real-time updates, and various functionalities inspired by the Instagram app.
+This App is made by the Guidance Course Of @RivaanRanawat.
 
 ## Technologies Used
 
@@ -33,7 +34,12 @@ Feel free to contribute, report issues, or suggest improvements!
 ## Screenshots
 
 ![Screenshot 1](/screenshots/Screenshot1.png)
-![Screenshot 2](/screenshots/Screenshot2.png)
+![Screenshot 2](/screenshots/Screenshot3.png)
+![Screenshot 3](/screenshots/Screenshot4.png)
+![Screenshot 4](/screenshots/Screenshot5.png)
+![Screenshot 5](/screenshots/Screenshot6.png)
+![Screenshot 6](/screenshots/Screenshot7.png)
+![Screenshot 7](/screenshots/Screenshot8.png)
 
 ## License
 
