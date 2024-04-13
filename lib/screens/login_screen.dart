@@ -5,6 +5,7 @@ import 'package:instagram_clone_practice/responsive/mobile_screen.dart';
 import 'package:instagram_clone_practice/responsive/responsive_layout.dart';
 import 'package:instagram_clone_practice/responsive/web_screen.dart';
 import 'package:instagram_clone_practice/screens/signup_screen.dart';
+import 'package:instagram_clone_practice/utilities/colors.dart';
 import 'package:instagram_clone_practice/utilities/size.dart';
 import 'package:instagram_clone_practice/utilities/utils.dart';
 import 'package:instagram_clone_practice/widgets/text_field.dart';
@@ -129,7 +130,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             color: Colors.white,
                           ),
                         )
-                      : const Text('Login'),
+                      : const Text(
+                          'Login',
+                          style: TextStyle(
+                            color: blueColor,
+                          ),
+                        ),
                 ),
               ),
               Flexible(
