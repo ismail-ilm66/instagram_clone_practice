@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:instagram_clone_practice/firebase/storage_functionalities.dart';
 import 'package:instagram_clone_practice/models/post.dart';

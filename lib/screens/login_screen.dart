@@ -6,6 +6,7 @@ import 'package:instagram_clone_practice/responsive/responsive_layout.dart';
 import 'package:instagram_clone_practice/responsive/web_screen.dart';
 import 'package:instagram_clone_practice/screens/signup_screen.dart';
 import 'package:instagram_clone_practice/utilities/size.dart';
+import 'package:instagram_clone_practice/utilities/utils.dart';
 import 'package:instagram_clone_practice/widgets/text_field.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -31,9 +32,31 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       isLoading = true;
     });
-    String x = await AuthorizationMethods()
-        .signIn(email: emailController.text, password: passwordController.text);
-    print(x);
+    if (emailController.text.isNotEmpty || passwordController.text.isNotEmpty) {
+      String x = await AuthorizationMethods().signIn(
+          email: emailController.text, password: passwordController.text);
+      print(x);
+      if (x == "Successfully Logged In") {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
+          return const ResponsiveLayout(
+            MobileScreen: MobileScreen(),
+            WebScreen: WebScreen(),
+          );
+        }));
+      } else {
+        displaySnackBar(context, x);
+        setState(() {
+          isLoading = false;
+        });
+      }
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+      displaySnackBar(context, 'Please Fill All the required fields');
+    }
+
+    // print(x);
     // if (x == "Successfully Logged In") {
     //   // ignore: use_build_context_synchronously
     //   Navigator.push(
@@ -45,12 +68,6 @@ class _LoginScreenState extends State<LoginScreen> {
     //     ),
     //   );
     // }
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
-      return const ResponsiveLayout(
-        MobileScreen: MobileScreen(),
-        WebScreen: WebScreen(),
-      );
-    }));
   }
 
   @override
@@ -105,8 +122,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     //  alignment: Alignment.center,
                   ),
                   child: isLoading
-                      ? const CircularProgressIndicator(
-                          color: Colors.white,
+                      ? Container(
+                          height: 30,
+                          width: 30,
+                          child: const CircularProgressIndicator(
+                            color: Colors.white,
+                          ),
                         )
                       : const Text('Login'),
                 ),
