@@ -7,6 +7,7 @@ import 'package:instagram_clone_practice/firebase/authentication.dart';
 import 'package:instagram_clone_practice/responsive/mobile_screen.dart';
 import 'package:instagram_clone_practice/responsive/responsive_layout.dart';
 import 'package:instagram_clone_practice/responsive/web_screen.dart';
+import 'package:instagram_clone_practice/utilities/colors.dart';
 import 'package:instagram_clone_practice/utilities/utils.dart';
 import 'package:instagram_clone_practice/widgets/text_field.dart';
 
@@ -107,12 +108,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                   Positioned(
                     left: 80,
-                    bottom: -10,
-                    child: IconButton(
-                      onPressed: () {
-                        pickImage();
-                      },
-                      icon: const Icon(Icons.add_a_photo),
+                    bottom: 0,
+                    child: CircleAvatar(
+                      radius: 20,
+                      backgroundColor: blueColor,
+                      child: IconButton(
+                        onPressed: () {
+                          pickImage();
+                        },
+                        icon: const Icon(
+                          Icons.add_a_photo,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   )
                 ],
